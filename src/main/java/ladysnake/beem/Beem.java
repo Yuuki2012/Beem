@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
@@ -24,11 +24,13 @@ public class Beem implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.BEEHIVE, BeeNestBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.BEEHIVE, d -> new BeeNestBlockEntityRenderer());
         KeyBindingHelper.registerKeyBinding(TOGGLE_BEEM);
+
         ClientTickEvents.START_CLIENT_TICK.register(e -> {
             while (TOGGLE_BEEM.wasPressed()) {
                 beem = !beem;
+
                 if (MinecraftClient.getInstance().player != null) {
                     MinecraftClient.getInstance().player.sendMessage(new TranslatableText("message.beem.toggled." + beem).setStyle(Style.EMPTY.withColor(Formatting.GOLD)), false);
                 }
